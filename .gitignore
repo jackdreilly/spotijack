@@ -2,3 +2,4 @@
 *.ogg
 .cache
 /.streamlit/secrets.toml
+client_secrets.json

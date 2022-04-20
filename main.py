@@ -2,9 +2,18 @@ from pathlib import Path
 from typing import List
 import streamlit as st
 import sh
+from pydrive.auth import GoogleAuth
+from pydrive.drive import GoogleDrive
 
 import spotipy
 from spotipy.oauth2 import SpotifyClientCredentials
+
+
+@st.experimental_singleton
+def drive() -> GoogleDrive:
+    gauth = GoogleAuth()
+    gauth.LocalWebserverAuth()
+    return GoogleDrive(gauth)
 
 
 @st.experimental_singleton
@@ -50,6 +59,12 @@ def download(uri: str) -> List[str]:
         )
         sh.rm(f.name)
         x.append(mp3_name)
+        gfile = drive().CreateFile(
+            {"parents": [{"id": "1Zkh9Yew_L9NKKhJ7IwUDQ8Vs3PRMXE9o"}]}
+        )
+        gfile.SetContentFile(mp3_name.name)
+        gfile.Upload()
+        sh.rm(mp3_name.name)
     return x
 
 
