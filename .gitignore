@@ -1,0 +1,4 @@
+*.mp3
+*.ogg
+.cache
+/.streamlit/secrets.toml
