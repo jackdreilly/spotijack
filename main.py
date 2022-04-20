@@ -16,6 +16,8 @@ def client() -> spotipy.Spotify:
 
 @st.experimental_memo
 def search(query: str, types: List[str]) -> List[dict]:
+    if not query or not types:
+        return {}
     return client().search(query, type=",".join(types), limit=50, market="FR")
 
 
@@ -26,7 +28,9 @@ def download(uri: str) -> List[str]:
         for track in client().album_tracks(uri)["items"]:
             x.extend(download(track["uri"]))
         return x
-    sh.oggify(sh.echo(uri), *st.secrets.spotify.values())
+    sh.Command("oggify", search_paths=[Path.cwd()])(
+        sh.echo(uri), *st.secrets.spotify.values()
+    )
     for f in Path(__file__).parent.glob("*.ogg"):
         mp3_name = Path(str(f).replace("ogg", "mp3"))
         if mp3_name.is_file():
