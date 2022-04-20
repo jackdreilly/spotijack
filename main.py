@@ -70,16 +70,12 @@ def download(uri: str) -> List[str]:
 
 for type_, value in search(
     st.text_input("Search spotify"),
-    st.multiselect(
-        "Type",
-        ["artist", "album", "track", "playlist", "show", "episode"],
-        ["track", "album"],
-    ),
+    st.multiselect("Type", ["album", "track", "playlist"], ["track"]),
 ).items():
     st.header(type_)
     for item in value["items"]:
         c1, c2, c3, c4 = st.columns([10, 15, 3, 4])
-        c1.text(",".join(artist["name"] for artist in item["artists"]))
+        c1.text(",".join(artist["name"] for artist in item.get("artists", [])))
         c2.text(item["name"])
         images = item.get("images") or item.get("album", {}).get("images")
         if images:
